@@ -178,33 +178,33 @@ if ('ontouchstart' in window) {
     });
   
     canvas.addEventListener('touchend', (event) => {
-      event.preventDefault();
-      if (isDragging && selectedCandy) {
-        const touch = event.changedTouches[0];
-        const rect = canvas.getBoundingClientRect();
-        const endX = touch.clientX - rect.left;
-        const endY = touch.clientY - rect.top;
-  
-        const startCol = Math.floor(selectedCandy.x / gridSize);
-        const startRow = Math.floor(selectedCandy.y / gridSize);
-        const endCol = Math.floor(endX / gridSize);
-        const endRow = Math.floor(endY / gridSize);
-  
-        console.log('Touch end detected at', endX, endY);
-  
-        if (canSwapCandies(startCol, startRow, endCol, endRow)) {
-          swapCandies(startCol, startRow, endCol, endRow);
-        } else {
-          // If not a valid swap, return the selected candy to its original position
-          selectedCandy.x = startCol * gridSize;
-          selectedCandy.y = startRow * gridSize;
+        event.preventDefault();
+        if (isDragging && selectedCandy) {
+          const touch = event.changedTouches[0];
+          const rect = canvas.getBoundingClientRect();
+          const endX = touch.clientX - rect.left;
+          const endY = touch.clientY - rect.top;
+      
+          const startCol = Math.floor(selectedCandy.x / gridSize);
+          const startRow = Math.floor(selectedCandy.y / gridSize);
+          const endCol = Math.floor(endX / gridSize);
+          const endRow = Math.floor(endY / gridSize);
+      
+          console.log('Touch end detected at', endX, endY);
+      
+          if (canSwapCandies(startCol, startRow, endCol, endRow)) {
+            swapCandies(startCol, startRow, endCol, endRow);
+          } else {
+            // Return the selected candy to its original position
+            selectedCandy.x = startCol * gridSize;
+            selectedCandy.y = startRow * gridSize;
+          }
         }
-      }
-  
-      isDragging = false;
-      selectedCandy = null;
-      drawCandy();
-    });
+      
+        isDragging = false;
+        selectedCandy = null;
+        drawCandy();
+      });      
   }  
  else {
   // Mouse events
@@ -260,52 +260,53 @@ if ('ontouchstart' in window) {
 
 
 function swapCandies(col1, row1, col2, row2) {
-  const candy1 = candySprites[col1][row1];
-  const candy2 = candySprites[col2][row2];
-
-  const startX1 = candy1.x;
-  const startY1 = candy1.y;
-  const startX2 = candy2.x;
-  const startY2 = candy2.y;
-
-  const deltaX1 = (startX2 - startX1) / 10; // Divide by number of frames
-  const deltaY1 = (startY2 - startY1) / 10;
-  const deltaX2 = (startX1 - startX2) / 10;
-  const deltaY2 = (startY1 - startY2) / 10;
-
-  let frame = 0;
-  const frames = 10; // Number of frames in the animation
-
-  function animateSwap() {
-      if (frame < frames) {
-          candy1.x += deltaX1;
-          candy1.y += deltaY1;
-          candy2.x += deltaX2;
-          candy2.y += deltaY2;
-          drawCandy();
-          frame++;
-          requestAnimationFrame(animateSwap);
-      } else {
-          // Final swap in the array after animation
-          candy1.x = startX2;
-          candy1.y = startY2;
-          candy2.x = startX1;
-          candy2.y = startY1;
-          [candySprites[col1][row1], candySprites[col2][row2]] = [candySprites[col2][row2], candySprites[col1][row1]];
-
-          // Check for matches after swapping
-          const matches = checkForMatches();
-          if (matches.length > 0) {
-              handleMatches(matches);
-          } else {
-              // If no matches, swap back with animation
-              animateSwapBack(col1, row1, col2, row2);
-          }
-      }
+    const candy1 = candySprites[col1][row1];
+    const candy2 = candySprites[col2][row2];
+  
+    const startX1 = candy1.x;
+    const startY1 = candy1.y;
+    const startX2 = candy2.x;
+    const startY2 = candy2.y;
+  
+    const deltaX1 = (startX2 - startX1) / 10; // Divide by number of frames
+    const deltaY1 = (startY2 - startY1) / 10;
+    const deltaX2 = (startX1 - startX2) / 10;
+    const deltaY2 = (startY1 - startY2) / 10;
+  
+    let frame = 0;
+    const frames = 10; // Number of frames in the animation
+  
+    function animateSwap() {
+        if (frame < frames) {
+            candy1.x += deltaX1;
+            candy1.y += deltaY1;
+            candy2.x += deltaX2;
+            candy2.y += deltaY2;
+            drawCandy();
+            frame++;
+            requestAnimationFrame(animateSwap);
+        } else {
+            // Final swap in the array after animation
+            candy1.x = startX2;
+            candy1.y = startY2;
+            candy2.x = startX1;
+            candy2.y = startY1;
+            [candySprites[col1][row1], candySprites[col2][row2]] = [candySprites[col2][row2], candySprites[col1][row1]];
+  
+            // Check for matches after swapping
+            const matches = checkForMatches();
+            if (matches.length > 0) {
+                handleMatches(matches);
+            } else {
+                // If no matches, swap back with animation
+                animateSwapBack(col1, row1, col2, row2);
+            }
+        }
+    }
+  
+    animateSwap();
   }
-
-  animateSwap();
-}
+  
 
 function animateSwapBack(col1, row1, col2, row2) {
   const candy1 = candySprites[col1][row1];
