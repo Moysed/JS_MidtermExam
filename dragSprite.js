@@ -29,7 +29,7 @@ window.onload = function() {
       candySprites.push([]);
       for (let j = 0; j < gridRows; j++) {
           const candyImage = new Image();
-          candyImage.src = `./_match01/part${Math.floor(Math.random() * 12) + 1}.png`;
+          candyImage.src = `./part${Math.floor(Math.random() * 12) + 1}.png`;
 
           // Create a new CandySprite and store it in the grid
           const candySprite = new CandySprite(i * gridSize, j * gridSize, candyImage);
