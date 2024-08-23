@@ -142,7 +142,7 @@ function isSameCandy(col1, row1, col2, row2) {
     return candySprites[col1][row1].image.src === candySprites[col2][row2].image.src;
 }
 
-if ('ontouchstart' in window) {
+
     // Touch events
     canvas.addEventListener('touchstart', (event) => {
       event.preventDefault();
@@ -206,7 +206,7 @@ if ('ontouchstart' in window) {
       drawCandy();
     });
   }  
- else {
+ 
   // Mouse events
   canvas.addEventListener('mousedown', (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -366,5 +366,4 @@ function animateSwapBack(col1, row1, col2, row2) {
 
  
 }
-}
-}
+
