@@ -141,64 +141,72 @@ window.onload = function() {
 function isSameCandy(col1, row1, col2, row2) {
     return candySprites[col1][row1].image.src === candySprites[col2][row2].image.src;
 }
+
 if ('ontouchstart' in window) {
-  // Touch events
-  canvas.addEventListener('touchstart', (event) => {
+    // Touch events
+    canvas.addEventListener('touchstart', (event) => {
       event.preventDefault();
+      console.log('Touch start detected');
       const touch = event.touches[0];
       const rect = canvas.getBoundingClientRect();
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
-
+  
       selectedCandy = findCandyAt(x, y);
       if (selectedCandy) {
-          isDragging = true;
+        isDragging = true;
+        console.log('Candy selected at', x, y);
       }
-  });
-
-  canvas.addEventListener('touchmove', (event) => {
+    });
+  
+    canvas.addEventListener('touchmove', (event) => {
       event.preventDefault();
       if (isDragging && selectedCandy) {
-          const touch = event.touches[0];
-          const rect = canvas.getBoundingClientRect();
-          const x = touch.clientX - rect.left;
-          const y = touch.clientY - rect.top;
-
-          // Highlight the candy being dragged
-          drawCandy();
-          ctx.strokeStyle = '#FF0000'; // Red highlight
-          ctx.lineWidth = 3;
-          ctx.strokeRect(selectedCandy.x, selectedCandy.y, gridSize, gridSize);
+        const touch = event.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+  
+        console.log('Touch move detected at', x, y);
+        
+        // Clear previous highlights
+        drawCandy();
+        ctx.strokeStyle = '#FF0000'; // Red highlight
+        ctx.lineWidth = 3;
+        ctx.strokeRect(selectedCandy.x, selectedCandy.y, gridSize, gridSize);
       }
-  });
-
-  canvas.addEventListener('touchend', (event) => {
-    event.preventDefault();
-    if (isDragging && selectedCandy) {
+    });
+  
+    canvas.addEventListener('touchend', (event) => {
+      event.preventDefault();
+      if (isDragging && selectedCandy) {
         const touch = event.changedTouches[0];
         const rect = canvas.getBoundingClientRect();
         const endX = touch.clientX - rect.left;
         const endY = touch.clientY - rect.top;
-
+  
         const startCol = Math.floor(selectedCandy.x / gridSize);
         const startRow = Math.floor(selectedCandy.y / gridSize);
         const endCol = Math.floor(endX / gridSize);
         const endRow = Math.floor(endY / gridSize);
-
+  
+        console.log('Touch end detected at', endX, endY);
+  
         if (canSwapCandies(startCol, startRow, endCol, endRow)) {
-            swapCandies(startCol, startRow, endCol, endRow);
+          swapCandies(startCol, startRow, endCol, endRow);
         } else {
-            // If not a valid swap, return the selected candy to its original position
-            selectedCandy.x = startCol * gridSize;
-            selectedCandy.y = startRow * gridSize;
+          // If not a valid swap, return the selected candy to its original position
+          selectedCandy.x = startCol * gridSize;
+          selectedCandy.y = startRow * gridSize;
         }
-    }
-
-    isDragging = false;
-    selectedCandy = null;
-    drawCandy();
-});
-} else {
+      }
+  
+      isDragging = false;
+      selectedCandy = null;
+      drawCandy();
+    });
+  }  
+ else {
   // Mouse events
   canvas.addEventListener('mousedown', (event) => {
       const rect = canvas.getBoundingClientRect();
